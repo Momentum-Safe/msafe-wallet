@@ -1,0 +1,22 @@
+{
+  "name": "msafe-iframe",
+  "version": "1.0.0",
+  "description": "iframe sdk of msafe",
+  "main": "index.js",
+  "author": "LeviHHH",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "json-rpc-protocol": "^0.13.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint": "^8.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "typescript": "^4.8.4"
+  }
+}
