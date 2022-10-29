@@ -1,6 +1,6 @@
 {
   "name": "msafe-iframe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "iframe sdk of msafe",
   "main": "index.js",
   "author": "LeviHHH",
