@@ -35,7 +35,7 @@ export class MsafeWallet implements WalletAPI {
         this.events[WalletEvent.ChangeNetwork] = cbk;
     }
     async network(): Promise<string> {
-        return this.client.request(WalletRPC.connect);
+        return this.client.request(WalletRPC.network);
     }
     async account(): Promise<Account> {
         return this.client.request(WalletRPC.account);
