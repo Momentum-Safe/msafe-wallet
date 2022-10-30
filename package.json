@@ -1,6 +1,6 @@
 {
   "name": "msafe-iframe",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "iframe sdk of msafe",
   "author": "LeviHHH",
   "license": "MIT",
@@ -9,6 +9,19 @@
   "scripts": {
     "build": "tsc"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Momentum-Safe/msafe-iframe.git"
+  },
+  "homepage": "https://github.com/Momentum-Safe/msafe-iframe",
+  "bugs": {
+    "url": "https://github.com/Momentum-Safe/msafe-iframe/issues"
+  },
+  "keywords": [
+    "Msafe",
+    "Msafe Iframe",
+    "Msafe SDK"
+  ],
   "dependencies": {
     "buffer": "^6.0.3",
     "json-rpc-protocol": "^0.13.2"
