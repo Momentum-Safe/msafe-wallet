@@ -36,7 +36,7 @@ class Decoder {
     }
 
     decodeBoolean(): boolean {
-        return Boolean(this.read(1));
+        return Boolean(this.read(1)[0]);
     }
 
     decodeString(): string {
