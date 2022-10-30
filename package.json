@@ -1,17 +1,11 @@
 {
   "name": "msafe-iframe",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "iframe sdk of msafe",
   "author": "LeviHHH",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    }
-  },
   "scripts": {
     "build": "tsc"
   },
