@@ -10,7 +10,7 @@ Installation of the [npm package]:
 > npm install --save msafe-iframe
 ```
 
-## Usage
+## Usage(Dapp Side)
 ### Init msafe wallet
 You should initialize it once and use it later.
 ```typescript
@@ -19,7 +19,7 @@ const msafe = await MsafeWallet.new();
 ```
 
 ### Connect/Disconnect to a msafe account
-Connect/Disconnect to a account.
+Connect/Disconnect to an account.
 ```typescript
 import { MsafeWallet } from "msafe-iframe";
 const msafe = await MsafeWallet.new();
@@ -131,6 +131,46 @@ msafe.onChangeAccount((account:Account)=>{
     console.log("public key:", account.publicKey);
 });
 ```
+
+## Usage(Msafe Server Side)
+### Accept dapp connection
+```typescript
+import { Connector,MsafeServer } from "msafe-iframe";
+// cleaner is a function that used to remove listener.
+const cleaner = Connector.accepts(dappUrl, (connector:Connector) => {
+
+})
+```
+### Create Msafe Wallet Service
+```typescript
+import { Connector,MsafeServer,WalletAPI } from "msafe-iframe";
+const connector:Connector = await Connector.accept(dappUrl);
+const server = new MsafeServer(connector, {
+    async connect(): Promise<Account> {
+        // ...
+        return {address:'0x1', publicKey:'0x1234...'};
+    },
+    // ... signAndSubmit(),signTransaction()
+    async signMessage(
+        message: string | Uint8Array
+    ): Promise<Uint8Array> {
+        throw Error("unsupport");
+    },
+} as WalletAPI);
+```
+### Emit Network Change Event
+```typescript
+import { Connector,MsafeServer,WalletAPI } from "msafe-iframe";
+const server = new MsafeServer(...);
+await server.changeNetwork('Testnet');
+```
+### Emit Account Change Event
+```typescript
+import { Connector,MsafeServer,WalletAPI } from "msafe-iframe";
+const server = new MsafeServer(...);
+await server.changeAccount({address:'0x1234...', publicKey:'0xabce...'});
+```
+
 
 ## Development
 
