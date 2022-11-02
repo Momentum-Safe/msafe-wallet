@@ -11,6 +11,17 @@ enum Type {
     Null,
 }
 
+function concat(list: Uint8Array[]): Uint8Array{
+    const total = list.reduce((size,a)=>size+a.length, 0);
+    const arr = new Uint8Array(total);
+    let offset = 0;
+    list.forEach((a)=>{
+        arr.set(a, offset);
+        offset += a.length;
+    });
+    return arr;
+}
+
 class Decoder {
     offset = 0;
     constructor(readonly data: Uint8Array) { }
@@ -82,20 +93,22 @@ class Decoder {
 }
 
 function encodeUint8Array(data: Uint8Array): Uint8Array {
-    const en = Buffer.alloc(data.length + 5);
+    const en = new Uint8Array(data.length + 5);
     en[0] = Type.Uint8Array;
-    en.writeUInt32LE(data.length, 1);
+    const lenBuffer = Buffer.alloc(4);
+    lenBuffer.writeUInt32LE(data.length);
+    en.set(lenBuffer, 1);
     en.set(data, 5);
     return en;
 }
 
 
 function encodeUndefined(): Uint8Array {
-    return Buffer.from([Type.Undefined])
+    return Uint8Array.from([Type.Undefined])
 }
 
 function encodeNull(): Uint8Array {
-    return Buffer.from([Type.Null])
+    return Uint8Array.from([Type.Null])
 }
 
 function encodeBigInt(data: bigint): Uint8Array {
@@ -125,15 +138,15 @@ function encodeObject(data: { [key: string]: any }): Uint8Array {
     const ens = entries.map(([key, value]) => {
         const keyBuf = encode<string>(key);
         const valueBuf = encode(value);
-        return Buffer.concat([keyBuf, valueBuf]);
+        return concat([keyBuf, valueBuf]);
     });
-    return Buffer.concat([Buffer.from([Type.Object]), encode<number>(entries.length), ...ens]);
+    return concat([Uint8Array.from([Type.Object]), encode<number>(entries.length), ...ens]);
 }
 
 
 function encodeArray(data: any[]): Uint8Array {
     const ens = data.map(elem => encode(elem));
-    return Buffer.concat([Buffer.from([Type.Array]), encode<number>(ens.length), ...ens]);
+    return concat([Uint8Array.from([Type.Array]), encode<number>(ens.length), ...ens]);
 }
 
 
@@ -175,6 +188,6 @@ export function encodeToStr<T>(data: T): string {
 }
 
 export function decodeFromStr<T>(data: string): T {
-    return decode(Buffer.from(data, 'hex'));
+    return decode(Uint8Array.from(Buffer.from(data, 'hex')));
 }
 
