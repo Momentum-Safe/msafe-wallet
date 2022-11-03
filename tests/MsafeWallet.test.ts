@@ -73,6 +73,17 @@ test("MsafeWallet", async () => {
     await expect(msafeWallet.signTransaction(TestData.mockTxn)).resolves.toEqual(TestData.mockTxnSigned);
     await msafeWallet.disconnect();
     await expect(msafeWallet.isConnected()).resolves.toEqual(false);
+    
+    msafeWallet.onChangeAccount((account) => {
+        expect(account).toEqual(TestData.account)
+    });
+
+    msafeWallet.onChangeNetwork((network) => {
+        expect(network).toEqual(TestData.network)
+    });
+
+    await msafeServer.changeAccount(TestData.account);
+    await msafeServer.changeNetwork(TestData.network);
     channel.port1.close();
     channel.port2.close();
 });
