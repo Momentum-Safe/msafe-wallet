@@ -63,8 +63,8 @@ test("MsafeWallet", async () => {
     });
     const msafeWallet = new MsafeWallet(new Connector(channel.port2, true));
     await expect(msafeWallet.isConnected()).resolves.toEqual(false);
-    await expect(msafeWallet.signMessage(TestData.message)).rejects.toMatchObject({message: "unsupport"});
-    await expect(msafeWallet.account()).rejects.toMatchObject({message: "unauthorized"});
+    await expect(msafeWallet.signMessage(TestData.message)).rejects.toEqual('unsupport');
+    await expect(msafeWallet.account()).rejects.toEqual('unauthorized');
     await expect(msafeWallet.connect()).resolves.toEqual(TestData.account);
     await expect(msafeWallet.isConnected()).resolves.toEqual(true);
     await expect(msafeWallet.network()).resolves.toEqual(TestData.network);

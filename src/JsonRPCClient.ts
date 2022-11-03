@@ -21,7 +21,7 @@ export class JsonRPCClient {
             case 'response':
                 return this.executors[Number(mesg.id)]?.resolve(decodeFromStr(mesg.result));
             case 'error':
-                return this.executors[Number(mesg.id)]?.reject(mesg.error);
+                return this.executors[Number(mesg.id)]?.reject(mesg.error.message);
         }
 
     }
