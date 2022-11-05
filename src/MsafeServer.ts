@@ -8,9 +8,9 @@ export class MsafeServer {
         this.server = new JsonRPCServer(connector, methods as any);
     }
     changeNetwork(network: string) {
-        this.server.notify(WalletEvent.ChangeAccount, [network]);
+        this.server.notify(WalletEvent.ChangeNetwork, [network]);
     }
     changeAccount(account: Account) {
-        this.server.notify(WalletEvent.ChangeNetwork, [account]);
+        this.server.notify(WalletEvent.ChangeAccount, [account]);
     }
 }

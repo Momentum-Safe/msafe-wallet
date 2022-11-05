@@ -181,6 +181,9 @@ await server.changeAccount({address:'0x1234...', publicKey:'0xabce...'});
 # Build
 > npm run build
 
+# Test
+> npm run test
+
 # Publish
 > npm publish
 ```
