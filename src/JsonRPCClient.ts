@@ -14,6 +14,7 @@ export class JsonRPCClient {
         this.connector.on('close', () => this.onClose());
     }
     private onMessage(data: string) {
+        // REVIEW: Shortage for message is msg.
         const mesg = parse(data) as JsonRpcPayloadResponse | JsonRpcPayloadNotification | JsonRpcPayloadError;
         switch (mesg.type) {
             case 'notification':
@@ -28,6 +29,7 @@ export class JsonRPCClient {
     async request(method: string, params: any[] = []): Promise<any> {
         return new Promise((resolve, reject) => {
             const reqId = this.id++;
+            // REVIEW: Is there a mechanism to remove the finished requests?
             this.executors[reqId] = { resolve, reject };
             const req = format.request(reqId, method, params.map(encodeToStr));
             this.connector.send(req);
