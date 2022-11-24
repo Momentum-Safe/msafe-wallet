@@ -9,7 +9,6 @@ export class Connector {
         };
         this.port.onmessageerror = () => {
             this.close();
-            this.onClose && this.onClose();
         };
     }
 
@@ -33,7 +32,8 @@ export class Connector {
     close() {
         if (this.connected) {
             this.port.close();
-            this.connected = false
+            this.connected = false;
+            this.onClose && this.onClose();
         }
     }
     // client connect to server
