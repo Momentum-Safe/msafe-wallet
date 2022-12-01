@@ -19,9 +19,13 @@ export class JsonRPCClient {
             case 'notification':
                 return this.onNotify(mesg.method, (mesg.params as JsonRpcParamsSchemaByPositional).map(decodeFromStr));
             case 'response':
-                return this.executors[Number(mesg.id)]?.resolve(decodeFromStr(mesg.result));
+                const {resolve} = this.executors[Number(mesg.id)];
+                delete this.executors[Number(mesg.id)];
+                return resolve(decodeFromStr(mesg.result));
             case 'error':
-                return this.executors[Number(mesg.id)]?.reject(mesg.error.message);
+                const {reject} = this.executors[Number(mesg.id)];
+                delete this.executors[Number(mesg.id)];
+                return reject(mesg.error.message);
         }
 
     }
