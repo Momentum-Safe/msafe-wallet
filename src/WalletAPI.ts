@@ -12,7 +12,7 @@ export type Option = Partial<{
 }>;
 
 type Array<T> = T[];
-type Base = string | number | Uint8Array | boolean;
+type Base = string | number | BigInt | Uint8Array | boolean;
 type Arg<T> = T | Array<Base>;
 type Args = Array<Arg<Base>>;
 
