@@ -8,7 +8,7 @@ export type Option = Partial<{
     gas_unit_price: string|bigint,
     expiration_timestamp_secs: string|bigint,
     sequence_number: string|bigint,
-    sender?: string,
+    sender: string,
 }>;
 
 type Array<T> = T[];
