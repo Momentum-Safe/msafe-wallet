@@ -3,13 +3,13 @@ export type Account = {
     publicKey: string,
 }
 
-export type Option = {
-    max_gas_amount: string,
-    gas_unit_price: string,
-    expiration_timestamp_secs: string,
-    sequence_number: string,
-    sender: string,
-}
+export type Option = Partial<{
+    max_gas_amount: string|bigint,
+    gas_unit_price: string|bigint,
+    expiration_timestamp_secs: string|bigint,
+    sequence_number: string|bigint,
+    sender?: string,
+}>;
 
 type Array<T> = T[];
 type Base = string | number | Uint8Array | boolean;
