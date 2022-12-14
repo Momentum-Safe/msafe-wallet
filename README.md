@@ -99,12 +99,13 @@ const account = await msafe.chainId();  // 1
 This method is used to sign the transaction and then submit it to the blockchain.  
 It takes two parameters:
 - `payload` - mandatory parameter containing the transaction body.
+  - For arguments of type vector, you can pass in an array.
+  - For `vector<u8>`, you can pass in `Uint8Array`.
+  - You can also pass in a BCS serialized transaction as payload(`Uint8Array`), which ignores option.
 - `option` - optional parameter that overrides transaction parameters.
-> - For arguments of type vector, you can pass in an array.
-> - For `vector<u8>`, you can pass in `Uint8Array`.
-> - You can also pass in a BCS serialized transaction as payload(`Uint8Array`), which ignores option.
 
-> **In current implementation, this function call never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
+
+> **In current implementation, this method call never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
 
 Example:
 ```typescript
@@ -135,7 +136,7 @@ Not supported for now.
 Not supported for now.
 
 ### Network Change Event
-This function is used to register the callback function for the network change event.
+This method is used to register the callback function for the network change event.
 
 Example:
 ```typescript
@@ -147,7 +148,7 @@ msafe.onChangeAccount((network:string)=>{
 ```
 
 ### Account Change Event
-This function is used to register the callback function for the account change event.
+This method is used to register the callback function for the account change event.
 
 Example:
 ```typescript
@@ -162,7 +163,7 @@ msafe.onChangeAccount((account:Account)=>{
 ## Use Aptos Wallet Adaptor
 The wallet adapter helps you to integrate many different wallets at once and use the same interface to interact with any supported wallet.
 
-Developed by Hippo team, main repository - https://github.com/hippospace/aptos-wallet-adapter.
+Here we give an example of using msafe wallet with the adaptor. For more details, see: https://github.com/hippospace/aptos-wallet-adapter.
 
 ### Install wallet adapter
 
@@ -173,6 +174,7 @@ npm install @manahippo/aptos-wallet-adapter
 ```
 
 ### Create wallet adapter
+Example:
 ```typescript
 import {
     WalletProvider,
@@ -185,6 +187,7 @@ const wallets = [
 ```
 
 ### Use wallet adapter
+Example:
 ```tsx
 import React from "react";
 import {
@@ -212,6 +215,7 @@ export default App;
 ```
 
 ### Use wallet adapter hooks
+Example:
 ```tsx
 import { useWallet, MsafeWalletName } from "@manahippo/aptos-wallet-adapter";
 
@@ -235,6 +239,7 @@ export function DAPP() {
 
 > **In current implementation, the function `signAndSubmitTransaction` never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
 
+Example:
 ```tsx
 import { useWallet, MsafeWalletName } from "@manahippo/aptos-wallet-adapter";
 
