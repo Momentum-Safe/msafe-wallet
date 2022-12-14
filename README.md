@@ -4,12 +4,16 @@ The frontend of dapp will run in an iframe under the msafe website, this SDK can
 
 This SDK wraps the msafe wallet and exposes a set of easy-to-use wallet interfaces. We are also working on integrating our SDK into aptos-wallet-adaptor, so that you can access our wallet through aptos-wallet-adaptor.
 
+Two way to integrate msafe wallet to your dapp:
+- use msafe wallet SDK directly: [Use Msafe Wallet SDK]
+- use aptos-wallet-adaptor: [Use Aptos Wallet Adaptor]
+
 ## Installation
 
 Installation of the [npm package]:
 
 ```bash
-> npm install --save msafe-wallet
+npm install --save msafe-wallet
 ```
 
 ## Detecting the Msafe Wallet environment
@@ -30,11 +34,11 @@ if(!MsafeWallet.isInMsafe()){ // check if the dapp is running in msafe
 }
 ```
 
-## Usage(Dapp Side)
+## Use Msafe Wallet SDK
 ### Init msafe wallet
 You should initialize it once and use it later.
 
-**To use msafe wallet, the dapp must run in msafe website.**
+> **To use msafe wallet, the dapp must run in msafe website.**
 
 Example:
 ```typescript
@@ -49,7 +53,7 @@ const msafe = await MsafeWallet.new('Testnet');
 ### Connect to a msafe account
 This method is used to connect to current account. It returns an account object containing the `address` and `publicKey`.
 
-**In the current implementation, accounts are always connected, and disconnect is not supported.**
+> **In the current implementation, accounts are always connected, and disconnect is not supported.**
 
 Example:
 ```typescript
@@ -100,7 +104,7 @@ It takes two parameters:
 > - For `vector<u8>`, you can pass in `Uint8Array`.
 > - You can also pass in a BCS serialized transaction as payload(`Uint8Array`), which ignores option.
 
-**In current implementation, this function call never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
+> **In current implementation, this function call never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
 
 Example:
 ```typescript
@@ -155,14 +159,14 @@ msafe.onChangeAccount((account:Account)=>{
 });
 ```
 
-## Use Aptos Wallet Adaptor(Dapp Side)
+## Use Aptos Wallet Adaptor
 The wallet adapter helps you to integrate many different wallets at once and use the same interface to interact with any supported wallet.
 
 Developed by Hippo team, main repository - https://github.com/hippospace/aptos-wallet-adapter.
 
 ### Install wallet adapter
 
-**The aptos-wallet-adapter integration is still waiting to be merge and should be available in the next release(@manahippo/aptos-wallet-adapter: >=1.0.7)**
+> **The aptos-wallet-adapter integration is still waiting to be merge and should be available in the next release(@manahippo/aptos-wallet-adapter: >=1.0.7)**
 
 ```bash
 npm install @manahippo/aptos-wallet-adapter
@@ -229,7 +233,7 @@ export function DAPP() {
 
 ### Use msafe wallet with wallet adapter hooks
 
-**In current implementation, the function `signAndSubmitTransaction` never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
+> **In current implementation, the function `signAndSubmitTransaction` never returns. This is because when a transaction is initiated, the dapp page will be closed and then the msafe page will be entered to collect signatures. We will optimize it in future releases.**
 
 ```tsx
 import { useWallet, MsafeWalletName } from "@manahippo/aptos-wallet-adapter";
@@ -333,3 +337,5 @@ await server.changeAccount({address:'0x1234...', publicKey:'0xabce...'});
 ```
 
 [npm package]: https://www.npmjs.com/package/msafe-iframe
+[Use Msafe Wallet SDK]: #use-msafe-wallet-sdk
+[Use Aptos Wallet Adaptor]: #use-aptos-wallet-adaptor
