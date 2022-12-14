@@ -1,9 +1,15 @@
 import { Connector } from "./connector";
 import { JsonRPCClient } from "./JsonRPCClient";
 import { Account, WalletAPI, Option, Payload, WalletEvent, WalletRPC } from "./WalletAPI";
-type onEventFunc = (data: any) => void;
+type onEventFunc = (data: any) => void
 
-const MsafeOrigin = 'https://app.m-safe.io';
+const MsafeOrigins = {
+    Mainnet: 'https://app.m-safe.io',
+    Testnet: 'https://testnet.m-safe.io'
+};
+
+type NetworkType = keyof typeof MsafeOrigins;
+
 export class MsafeWallet implements WalletAPI {
     public client: JsonRPCClient;
     events: { [key: string]: onEventFunc } = {};
@@ -54,8 +60,35 @@ export class MsafeWallet implements WalletAPI {
     async signMessage(message: string | Uint8Array): Promise<Uint8Array> {
         return this.client.request(WalletRPC.signMessage, [message]);
     }
-    static async new(msafe = MsafeOrigin): Promise<MsafeWallet> {
-        const connector = await Connector.connect(window.parent, msafe);
+
+    /// check if current page is running under msafe wallet
+    static inMsafeWallet(): boolean {
+        return typeof window !== 'undefined' &&
+            typeof document !== 'undefined' &&
+            typeof parent !== 'undefined' &&
+            typeof parent.window !== 'undefined' &&
+            parent.window !== window
+    }
+
+    /// get msafe dapp url, which can be used to open dapp under msafe wallet.
+    /// @param msafe: network type of msafe website url
+    /// @param dappUrl: dapp url
+    static getAppUrl(msafe: NetworkType | string = 'Mainnet', dappUrl = `${window.location.href}`): string {
+        const msafeOrigin = MsafeWallet.getOrigin(msafe);
+        return `${msafeOrigin}/apps/0?url=${encodeURIComponent(dappUrl)}`;
+    }
+
+    /// get msafe origin by network type or url
+    /// @param msafe: network type of msafe website url
+    static getOrigin(msafe: NetworkType | string = 'Mainnet'): string {
+        return new URL(MsafeOrigins[msafe as NetworkType] || msafe).origin;
+    }
+
+    /// open msafe wallet
+    /// @param msafe: network type of msafe website url
+    static async new(msafe: NetworkType | string = 'Mainnet'): Promise<MsafeWallet> {
+        const msafeOrigin = MsafeWallet.getOrigin(msafe);
+        const connector = await Connector.connect(window.parent, msafeOrigin);
         return new MsafeWallet(connector);
     }
 }
