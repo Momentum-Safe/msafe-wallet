@@ -17,7 +17,7 @@ const TestData = {
     message: "message",
 }
 
-test("MsafeWallet", async () => {
+test("MsafeWallet integration test", async () => {
     const channel = new MessageChannel();
     const msafeServer = new MsafeServer(new Connector(channel.port1, true), {
         async connect(): Promise<Account> {
@@ -86,4 +86,34 @@ test("MsafeWallet", async () => {
     await msafeServer.changeNetwork(TestData.network);
     channel.port1.close();
     channel.port2.close();
+});
+
+describe("MsafeWallet unit test", () => {
+    it("getOrigin test", async () => {
+        const msafeMainnet = MsafeWallet.getOrigin("Mainnet");
+        expect(msafeMainnet).toEqual("https://app.m-safe.io");
+        const msafeTestnet = MsafeWallet.getOrigin("Testnet");
+        expect(msafeTestnet).toEqual("https://testnet.m-safe.io");
+        const msafeLocal = MsafeWallet.getOrigin("http://localhost:3000");
+        expect(msafeLocal).toEqual("http://localhost:3000");
+    });
+
+    it("getAppUrl test", () => {
+        const dappUrl = "https://dapp.io";
+        const msafeMainnetDapp = MsafeWallet.getAppUrl('Mainnet', dappUrl);
+        expect(msafeMainnetDapp).toEqual("https://app.m-safe.io/apps/0?url=https%3A%2F%2Fdapp.io");
+        const msafeTestnetDapp = MsafeWallet.getAppUrl('Testnet', dappUrl);
+        expect(msafeTestnetDapp).toEqual("https://testnet.m-safe.io/apps/0?url=https%3A%2F%2Fdapp.io");
+        const msafeLocalDapp = MsafeWallet.getAppUrl('http://localhost:3000', dappUrl);
+        expect(msafeLocalDapp).toEqual("http://localhost:3000/apps/0?url=https%3A%2F%2Fdapp.io");
+    });
+
+    it("inMsafeWallet test", () => {
+        expect(MsafeWallet.inMsafeWallet()).toEqual(false);
+
+        global.window = {} as any;
+        global.document = {} as any;
+        global.parent = {window:{}} as any;
+        expect(MsafeWallet.inMsafeWallet()).toEqual(true);
+    });
 });

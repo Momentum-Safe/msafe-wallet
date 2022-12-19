@@ -13,6 +13,11 @@ export class JsonRPCServer {
         const req = parse(data) as JsonRpcPayloadRequest;
         if (req.type !== 'request') return;
         const method = this.methods[req.method];
+        if (method === undefined) {
+            const resp = format.error(req.id, new JsonRpcError("method not exist"));
+            this.connector.send(resp);
+            return;
+        }
         method(...(req.params as JsonRpcParamsSchemaByPositional).map(param => decodeFromStr(param))).then(response => {
             const resp = format.response(req.id, encodeToStr(response));
             this.connector.send(resp);
