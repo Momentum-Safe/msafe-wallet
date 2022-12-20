@@ -6,7 +6,9 @@ import { Account, Payload, Option } from '../src/WalletAPI';
 const TestData = {
     account: {
         address: "0xffeeddccbbaa9988776655443322110000112233445566778899aabbccddeeff",
-        publicKey: "0x00112233445566778899aabbccddeeffffeeddccbbaa99887766554433221100"
+        publicKey: ["0x00112233445566778899aabbccddeeffffeeddccbbaa99887766554433221100", "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"],
+        authKey: "0xaa9988776655443322110000112233445566778899aabbccddeeff0011223344",
+        minKeysRequired: 2,
     },
     isConnected: false,
     network: "mainnet",

@@ -1,7 +1,9 @@
-export type Account = {
-    address: string,
-    publicKey: string,
-}
+export interface Account {
+    publicKey: string[];
+    address: string;
+    authKey: string;
+    minKeysRequired: number;
+  }
 
 export type Option = Partial<{
     max_gas_amount: string|bigint,
