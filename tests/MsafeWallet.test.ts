@@ -36,7 +36,7 @@ test("MsafeWallet integration test", async () => {
             return TestData.network;
         },
         async account(): Promise<Account> {
-            if(!TestData.isConnected) throw "unauthorized";
+            if (!TestData.isConnected) throw "unauthorized";
             return TestData.account;
         },
         async chainId(): Promise<Number> {
@@ -75,7 +75,7 @@ test("MsafeWallet integration test", async () => {
     await expect(msafeWallet.signTransaction(TestData.mockTxn)).resolves.toEqual(TestData.mockTxnSigned);
     await msafeWallet.disconnect();
     await expect(msafeWallet.isConnected()).resolves.toEqual(false);
-    
+
     msafeWallet.onChangeAccount((account) => {
         expect(account).toEqual(TestData.account)
     });
@@ -115,7 +115,7 @@ describe("MsafeWallet unit test", () => {
 
         global.window = {} as any;
         global.document = {} as any;
-        global.parent = {window:{}} as any;
+        global.parent = { window: {} } as any;
         expect(MsafeWallet.inMsafeWallet()).toEqual(true);
     });
 });

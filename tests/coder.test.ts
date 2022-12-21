@@ -23,7 +23,7 @@ const TestDatas = [
 ];
 
 test("encode/decode", () => {
-    for(const testdata of TestDatas) {
+    for (const testdata of TestDatas) {
         const enc = encode(testdata);
         const de = decode(enc);
         expect(de).toEqual(testdata);
@@ -35,7 +35,7 @@ test("encode/decode", () => {
 
 
 test("encodeToStr/decodeFromStr", () => {
-    for(const testdata of TestDatas) {
+    for (const testdata of TestDatas) {
         const enc = encodeToStr(testdata);
         const de = decodeFromStr(enc);
         expect(de).toEqual(testdata);

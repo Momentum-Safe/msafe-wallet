@@ -3,13 +3,13 @@ export interface Account {
     address: string;
     authKey: string;
     minKeysRequired: number;
-  }
+}
 
 export type Option = Partial<{
-    max_gas_amount: string|bigint,
-    gas_unit_price: string|bigint,
-    expiration_timestamp_secs: string|bigint,
-    sequence_number: string|bigint,
+    max_gas_amount: string | bigint,
+    gas_unit_price: string | bigint,
+    expiration_timestamp_secs: string | bigint,
+    sequence_number: string | bigint,
     sender: string,
 }>;
 
