@@ -13,4 +13,8 @@ export class MsafeServer {
     changeAccount(account: Account) {
         this.server.notify(WalletEvent.ChangeAccount, [account]);
     }
+
+    get version() {
+        return this.server.version;
+    }
 }

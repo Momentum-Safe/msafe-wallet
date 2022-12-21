@@ -10,16 +10,21 @@ describe("Connector test", () => {
     const notificationName = "sthChange";
     const notificationData = "something";
     const channel = new MessageChannel();
-    const server = new JsonRPCServer(new Connector(channel.port1, true), {
+    const server = new JsonRPCServer(new Connector(channel.port1), {
         [requestName]: async (data: string) => {
             if (data !== requestData) throw data;
             return "pong";
         }
     });
-    const client = new JsonRPCClient(new Connector(channel.port2, true), {
+    const client = new JsonRPCClient(new Connector(channel.port2), {
         [notificationName]: async (data: string) => {
             expect(data).toEqual(notificationData);
         }
+    });
+
+    afterAll(() => {
+        server.connector.close();
+        client.connector.close();
     });
 
     it("ping-pong", async () => {
