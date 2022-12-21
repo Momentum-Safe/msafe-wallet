@@ -11,11 +11,11 @@ enum Type {
     Null,
 }
 
-function concat(list: Uint8Array[]): Uint8Array{
-    const total = list.reduce((size,a)=>size+a.length, 0);
+function concat(list: Uint8Array[]): Uint8Array {
+    const total = list.reduce((size, a) => size + a.length, 0);
     const arr = new Uint8Array(total);
     let offset = 0;
-    list.forEach((a)=>{
+    list.forEach((a) => {
         arr.set(a, offset);
         offset += a.length;
     });
@@ -23,14 +23,12 @@ function concat(list: Uint8Array[]): Uint8Array{
 }
 
 class Decoder {
-    offset = 0;
-    constructor(readonly data: Uint8Array) { }
+    constructor(readonly data: Uint8Array, private byteOffset = data.byteOffset) { }
 
-    read(n: number): Uint8Array {
-        const start = this.offset;
-        this.offset += n;
-        if (this.offset > this.data.length) throw Error("read overflow");
-        return this.data.subarray(start, this.offset);
+    read(byteLength: number): Uint8Array {
+        const result = new Uint8Array(this.data.buffer, this.byteOffset, byteLength);
+        this.byteOffset += byteLength;
+        return result;
     }
 
     decodeBigInt(): bigint {
@@ -42,7 +40,7 @@ class Decoder {
     }
 
     decodeUint8Array(): Uint8Array {
-        const length = Buffer.from(this.read(4)).readUInt32LE(0);
+        const length = new Uint32Array(this.read(4).slice(0).buffer)[0];
         return this.read(length);
     }
 
@@ -95,9 +93,7 @@ class Decoder {
 function encodeUint8Array(data: Uint8Array): Uint8Array {
     const en = new Uint8Array(data.length + 5);
     en[0] = Type.Uint8Array;
-    const lenBuffer = Buffer.alloc(4);
-    lenBuffer.writeUInt32LE(data.length);
-    en.set(lenBuffer, 1);
+    Buffer.from(en.buffer, 1, 4).writeUInt32LE(data.length);
     en.set(data, 5);
     return en;
 }
@@ -128,7 +124,9 @@ function encodeBoolean(data: boolean): Uint8Array {
 }
 
 function encodeString(data: string): Uint8Array {
-    const en = encodeUint8Array(Buffer.from(data));
+    const buf = new ArrayBuffer(data.length);
+    Buffer.from(buf).write(data);
+    const en = encodeUint8Array(new Uint8Array(buf));
     en[0] = Type.String;
     return en;
 }
@@ -184,10 +182,12 @@ export function decode<T>(data: Uint8Array): T {
 }
 
 export function encodeToStr<T>(data: T): string {
-    return Buffer.from(encode(data)).toString('hex');
+    return Buffer.from(encode(data).buffer).toString('hex');
 }
 
 export function decodeFromStr<T>(data: string): T {
-    return decode(Uint8Array.from(Buffer.from(data, 'hex')));
+    const buffer = new ArrayBuffer(data.length / 2);
+    Buffer.from(buffer).write(data, 'hex');
+    return decode(new Uint8Array(buffer));
 }
 

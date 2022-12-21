@@ -6,7 +6,9 @@ import { Account, Payload, Option } from '../src/WalletAPI';
 const TestData = {
     account: {
         address: "0xffeeddccbbaa9988776655443322110000112233445566778899aabbccddeeff",
-        publicKey: "0x00112233445566778899aabbccddeeffffeeddccbbaa99887766554433221100"
+        publicKey: ["0x00112233445566778899aabbccddeeffffeeddccbbaa99887766554433221100", "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"],
+        authKey: "0xaa9988776655443322110000112233445566778899aabbccddeeff0011223344",
+        minKeysRequired: 2,
     },
     isConnected: false,
     network: "mainnet",
@@ -34,7 +36,7 @@ test("MsafeWallet integration test", async () => {
             return TestData.network;
         },
         async account(): Promise<Account> {
-            if(!TestData.isConnected) throw "unauthorized";
+            if (!TestData.isConnected) throw "unauthorized";
             return TestData.account;
         },
         async chainId(): Promise<Number> {
@@ -73,7 +75,7 @@ test("MsafeWallet integration test", async () => {
     await expect(msafeWallet.signTransaction(TestData.mockTxn)).resolves.toEqual(TestData.mockTxnSigned);
     await msafeWallet.disconnect();
     await expect(msafeWallet.isConnected()).resolves.toEqual(false);
-    
+
     msafeWallet.onChangeAccount((account) => {
         expect(account).toEqual(TestData.account)
     });
@@ -113,7 +115,7 @@ describe("MsafeWallet unit test", () => {
 
         global.window = {} as any;
         global.document = {} as any;
-        global.parent = {window:{}} as any;
+        global.parent = { window: {} } as any;
         expect(MsafeWallet.inMsafeWallet()).toEqual(true);
     });
 });
