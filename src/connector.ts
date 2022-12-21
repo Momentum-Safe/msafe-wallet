@@ -1,9 +1,13 @@
+import { version } from '../package.json';
+
 export class Connector {
+    static version = version;
     static HANDSHAKE_REQ = 'HANDSHAKE_REQ';
     static HANDSHAKE_ACK = 'HANDSHAKE_ACK';
+    connected = true;
     onClose?: () => void;
     onMessage?: (data: any) => void;
-    constructor(public readonly port: MessagePort, public connected: boolean) {
+    constructor(public readonly port: MessagePort, public readonly peerVersion?: string) {
         this.port.onmessage = (ev) => {
             this.onMessage && this.onMessage(ev.data);
         };
@@ -29,6 +33,13 @@ export class Connector {
         }
     }
 
+    get version() {
+        return {
+            self: Connector.version,
+            peer: this.peerVersion,
+        }
+    }
+
     close() {
         if (this.connected) {
             this.port.close();
@@ -36,28 +47,43 @@ export class Connector {
             this.onClose && this.onClose();
         }
     }
+
+    static isHandshakeMessage(data: string, handshakeType: string) {
+        return data.startsWith(handshakeType);
+    }
+
+    static getHandshakeVersion(data: string) {
+        return String(data).split(':')[1];
+    }
+
+    static toHandshakeVersion(handshakeType: string, withVersion = true) {
+        return withVersion ? `${handshakeType}:${Connector.version}` : handshakeType;
+    }
+
     // client connect to server
     static async connect(targetWindow: any, origin: string): Promise<Connector> {
         return new Promise((resolve, rejected) => {
             const channelPair = new MessageChannel();
             let timer = setTimeout(rejected, 1000);
             channelPair.port1.onmessage = ev => {
-                if (ev.data === this.HANDSHAKE_ACK) {
+                if (Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_ACK)) {
                     clearTimeout(timer);
-                    resolve(new Connector(channelPair.port1, true));
+                    const version = Connector.getHandshakeVersion(ev.data);
+                    resolve(new Connector(channelPair.port1, version));
                 }
             };
-            targetWindow.postMessage(Connector.HANDSHAKE_REQ, origin, [channelPair.port2]);
+            targetWindow.postMessage(Connector.toHandshakeVersion(Connector.HANDSHAKE_REQ), origin, [channelPair.port2]);
         });
     }
     // server listening connection request
     static accepts(origin: string, fallback: (connector: Connector) => void): () => void {
         const handle = (ev: MessageEvent) => {
             if (ev.origin !== origin) return;
-            if (ev.data !== Connector.HANDSHAKE_REQ) return;
+            if (!Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_REQ)) return;
+            const version = Connector.getHandshakeVersion(ev.data);
             const port = ev.ports[0];
-            port.postMessage(this.HANDSHAKE_ACK);
-            fallback(new Connector(ev.ports[0], true));
+            port.postMessage(Connector.toHandshakeVersion(Connector.HANDSHAKE_ACK, version !== undefined));
+            fallback(new Connector(ev.ports[0], version));
         };
         window.addEventListener('message', handle);
         return () => window.removeEventListener('message', handle);

@@ -30,6 +30,9 @@ export class JsonRPCServer {
         const notification = format.notification(type, data.map(encodeToStr));
         this.connector.send(notification);
     }
+    get version() {
+        return this.connector.version;
+    }
     private onClose() {
 
     }

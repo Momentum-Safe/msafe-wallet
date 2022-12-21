@@ -61,6 +61,10 @@ export class MsafeWallet implements WalletAPI {
         return this.client.request(WalletRPC.signMessage, [message]);
     }
 
+    get version() {
+        return this.client.version;
+    }
+
     /// check if current page is running under msafe wallet
     static inMsafeWallet(): boolean {
         return typeof window !== 'undefined' &&

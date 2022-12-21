@@ -37,6 +37,9 @@ export class JsonRPCClient {
             this.connector.send(req);
         });
     }
+    get version() {
+        return this.connector.version;
+    }
     private onNotify(type: string, data: any[]) {
         this.notifiers[type](...data);
     }
