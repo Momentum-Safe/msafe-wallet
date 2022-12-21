@@ -19,7 +19,7 @@ npm install --save msafe-wallet
 ## Detecting the Msafe Wallet environment
 To use msfe wallet, the dapp website must be running in an iframe under the msafe website.
 There are two way to detect if the dapp is running in msafe:
-- Check if the `MsafeWallet.isInMsafe()` return true.
+- Check if the `MsafeWallet.inMsafeWallet()` return true.
 - Check if the current url contains the parameter `msafe=true`.
 
 If the msafe wallet environment is detected, you can automatically connect to the msafe wallet at initialization.
@@ -27,8 +27,8 @@ If the msafe wallet environment is detected, you can automatically connect to th
 Example:
 ```typescript
 import { MsafeWallet } from "msafe-wallet";
-const isInMsafe = window.location.search.includes('msafe=true');
-if(!MsafeWallet.isInMsafe()){ // check if the dapp is running in msafe
+const inMsafeWallet = window.location.search.includes('msafe=true');
+if(!MsafeWallet.inMsafeWallet()){ // check if the dapp is running in msafe
     const url = MsafeWallet.getAppUrl('Testnet'); // get dapp url for msafe
     window.location.href.replace(url); // redirect to msafe dapp
 }
@@ -43,7 +43,7 @@ You should initialize it once and use it later.
 Example:
 ```typescript
 import { MsafeWallet } from "msafe-wallet";
-if(!MsafeWallet.isInMsafe()){ // check if the dapp is running in msafe
+if(!MsafeWallet.inMsafeWallet()){ // check if the dapp is running in msafe
     const url = MsafeWallet.getAppUrl('Testnet'); // get dapp url for msafe
     window.location.href.replace(url); // redirect to msafe dapp
 }
@@ -166,8 +166,6 @@ The wallet adapter helps you to integrate many different wallets at once and use
 Here we give an example of using msafe wallet with the adaptor. For more details, see: https://github.com/hippospace/aptos-wallet-adapter.
 
 ### Install wallet adapter
-
-> **The aptos-wallet-adapter integration is still waiting to be merge and should be available in the next release(@manahippo/aptos-wallet-adapter: >=1.0.7)**
 
 ```bash
 npm install @manahippo/aptos-wallet-adapter
