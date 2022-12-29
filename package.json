@@ -18,7 +18,8 @@
     "build": "yarn clean && yarn _build:browser && yarn _build:node",
     "_build:browser": "tsup --platform browser --format iife --global-name msafeIframe --minify",
     "_build:node": "tsup --format cjs,esm --dts",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
