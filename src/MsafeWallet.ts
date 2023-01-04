@@ -88,11 +88,20 @@ export class MsafeWallet implements WalletAPI {
         return new URL(MsafeOrigins[msafe as NetworkType] || msafe).origin;
     }
 
+    private static isValidOrigin(msafe: NetworkType | string | string[], msafeOrigin: string): boolean {
+        if(msafe instanceof Array) {
+            return msafe.map(m=>MsafeWallet.getOrigin(m)).includes(msafeOrigin);
+        }
+        return msafeOrigin === MsafeWallet.getOrigin(msafe);
+    }
+
     /// open msafe wallet
     /// @param msafe: network type of msafe website url
-    static async new(msafe: NetworkType | string = 'Mainnet'): Promise<MsafeWallet> {
-        const msafeOrigin = MsafeWallet.getOrigin(msafe);
-        const connector = await Connector.connect(window.parent, msafeOrigin);
+    static async new(msafe: NetworkType | string | string[] = 'Mainnet'): Promise<MsafeWallet> {
+        const msafeWindow = window.parent;
+        const msafeOrigin = msafeWindow.origin;
+        if(!MsafeWallet.isValidOrigin(msafe, msafeOrigin)) throw `invalid msafe origin, expected ${msafe}, got ${msafeOrigin}`;
+        const connector = await Connector.connect(msafeWindow, msafeOrigin);
         return new MsafeWallet(connector);
     }
 }
