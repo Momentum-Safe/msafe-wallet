@@ -1,4 +1,7 @@
 # Msafe Wallet SDK
+
+[![codecov](https://codecov.io/gh/Momentum-Safe/msafe-wallet/branch/main/graph/badge.svg?token=CYM8HWWKOW)](https://codecov.io/gh/Momentum-Safe/msafe-wallet)
+
 Msafe Wallet SDK is used to integrate any dapp into msafe multi-sign wallet.  
 The frontend of dapp will run in an iframe under the msafe website, this SDK can be used for the interaction between dapp and msafe wallet.
 
