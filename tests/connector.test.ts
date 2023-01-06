@@ -6,12 +6,12 @@ const invalidOrigin = 'https://invalid.io';
 
 /// We use FakeMessageEvent to simulate MessageEvent, because MessageEvent check source type is Window.
 class FakeMessageEvent {
-    data:any;
-    origin:string;
-    source:any;
-    ports:any[];
-    constructor(message:any, option:any) {
-        if(message !== 'message') throw new Error('invalid message');
+    data: any;
+    origin: string;
+    source: any;
+    ports: any[];
+    constructor(message: any, option: any) {
+        if (message !== 'message') throw new Error('invalid message');
         this.data = option.data;
         this.origin = option.origin;
         this.source = option.source;
@@ -92,10 +92,35 @@ test("Connector integration test", async () => {
 });
 
 describe("Connector unit test", () => {
+    const fakeVersion = '2.0.0';
+    const connect_deprecated = (targetWindow: any, origin: string): Promise<Connector> => {
+        return new Promise((resolve, rejected) => {
+            const channelPair = new MessageChannel();
+            let timer = setTimeout(rejected, 1000);
+            channelPair.port1.onmessage = ev => {
+                if (Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_ACK)) {
+                    clearTimeout(timer);
+                    const version = Connector.getVersionFromHandshake(ev.data);
+                    resolve(new Connector(channelPair.port1, version));
+                }
+            };
+            const message = `${Connector.HANDSHAKE_REQ}:${fakeVersion}`;
+            targetWindow.postMessage(message, origin, [channelPair.port2]);
+        });
+    }
 
     afterEach(() => {
         serverWindow.clean();
         clientWindow.clean();
+    });
+
+    it('toHandshakeMessage', () => {
+        expect(Connector.toHandshakeMessage(Connector.HANDSHAKE_REQ, false)).toEqual(`${Connector.HANDSHAKE_REQ}`);
+        expect(Connector.toHandshakeMessage(Connector.HANDSHAKE_ACK, false)).toEqual(`${Connector.HANDSHAKE_ACK}`);
+        expect(Connector.toHandshakeMessage(Connector.HANDSHAKE_REQ, true)).toEqual(`${Connector.HANDSHAKE_REQ}:${Connector.version}`);
+        expect(Connector.toHandshakeMessage(Connector.HANDSHAKE_ACK, true)).toEqual(`${Connector.HANDSHAKE_ACK}:${Connector.version}`);
+        expect(Connector.toHandshakeMessage(Connector.HANDSHAKE_REQ)).toEqual(`${Connector.HANDSHAKE_REQ}:${Connector.version}`);
+        expect(Connector.toHandshakeMessage(Connector.HANDSHAKE_ACK)).toEqual(`${Connector.HANDSHAKE_ACK}:${Connector.version}`);
     });
 
     it("connect with invalid origins", async () => {
@@ -113,15 +138,15 @@ describe("Connector unit test", () => {
     it("connect with client use old handshake", async () => {
         switchToServer();
         const cleaner = Connector.accepts(clientOrigin, (connector: Connector) => {
-            expect(connector.version.peer).toEqual(connector.version.self);
+            expect(connector.version.peer).toEqual(fakeVersion);
         });
 
         switchToClient();
-        const connector = await Connector.connect_deprecated(serverWindow, serverOrigin);
+        const connector = await connect_deprecated(serverWindow, serverOrigin);
         switchToServer();
         cleaner();
         // check version
-        expect(connector.version.peer).toEqual(connector.version.self);
+        expect(connector.version.peer).toEqual(Connector.version);
         connector.close();
     });
 
@@ -149,13 +174,13 @@ describe("Connector unit test", () => {
         const postMessage = serverWindow.postMessage.bind(serverWindow);
         serverWindow.postMessage = (message: string, origin: string, ports: MessagePort[]) => {
             if (Connector.isHandshakeMessage(message, Connector.HANDSHAKE_REQ)) {
-                message = Connector.toHandshakeVersion(Connector.HANDSHAKE_REQ, false);
+                message = Connector.toHandshakeMessage(Connector.HANDSHAKE_REQ, false);
             }
             return postMessage(message, origin, ports);
         }
 
         switchToClient();
-        const connector = await Connector.connect_deprecated(serverWindow, serverOrigin);
+        const connector = await connect_deprecated(serverWindow, serverOrigin);
         switchToServer();
         cleaner();
 
