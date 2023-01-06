@@ -1,7 +1,7 @@
 
 
 enum Version {
-    ALLOWLIST = '2.0.4',
+    ALLOWLIST = '2.0.5',
 };
 
 /// Compare two version strings.
