@@ -88,6 +88,7 @@ export class Connector {
     }
     // server listening connection request
     static accepts(origin: string, handler: (connector: Connector) => void): () => void {
+        origin = new URL(origin).origin;
         const handle = (ev: MessageEvent) => {
             if (ev.origin !== origin) return;
             if (!Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_REQ)) return;
