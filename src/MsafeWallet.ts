@@ -5,10 +5,13 @@ type onEventFunc = (data: any) => void
 
 const MsafeOrigins = {
     Mainnet: 'https://app.m-safe.io',
-    Testnet: 'https://testnet.m-safe.io'
+    Testnet: 'https://testnet.m-safe.io',
+    Partner: 'https://partner.m-safe.io',
 };
 
 type NetworkType = keyof typeof MsafeOrigins;
+type MsafeNetwork = NetworkType | string;
+type MsafeNetworks = MsafeNetwork | MsafeNetwork[];
 
 export class MsafeWallet implements WalletAPI {
     public client: JsonRPCClient;
@@ -74,24 +77,25 @@ export class MsafeWallet implements WalletAPI {
             parent.window !== window
     }
 
-    /// get msafe dapp url, which can be used to open dapp under msafe wallet.
-    /// @param msafe: network type of msafe website url
+    /// Get msafe dapp url, which can be used to open dapp under msafe wallet.
+    /// @param msafe: network type or msafe website url
     /// @param dappUrl: dapp url
-    static getAppUrl(msafe: NetworkType | string = 'Mainnet', dappUrl = `${window.location.href}`): string {
+    static getAppUrl(msafe: MsafeNetwork = 'Mainnet', dappUrl = `${window.location.href}`): string {
         const msafeOrigin = MsafeWallet.getOrigin(msafe);
         return `${msafeOrigin}/apps/0?url=${encodeURIComponent(dappUrl)}`;
     }
 
-    /// get msafe origin by network type or url
-    /// @param msafe: network type of msafe website url
-    static getOrigin(msafe: NetworkType | string = 'Mainnet'): string {
+    /// Get msafe origin by network type or url
+    /// @param msafe: network type or msafe website url
+    static getOrigin(msafe: MsafeNetwork = 'Mainnet'): string {
         return new URL(MsafeOrigins[msafe as NetworkType] || msafe).origin;
     }
 
-    /// open msafe wallet
-    /// @param msafe: network type of msafe website url
-    static async new(msafe: NetworkType | string | string[] = 'Mainnet'): Promise<MsafeWallet> {
-        const msafeOrigin = msafe instanceof Array ? msafe.map(m=>MsafeWallet.getOrigin(m)) : [MsafeWallet.getOrigin(msafe)];
+    /// Open msafe wallet and establish communication with the msafe website.
+    /// The allowlist is used to check if the msafe website is trusted.
+    /// @param allowlist: allowlist of msafe website url, omit means accpets all msafe websites. you can pass a single url or an array of urls.
+    static async new(allowlist: MsafeNetworks = Object.values(MsafeOrigins)): Promise<MsafeWallet> {
+        const msafeOrigin = allowlist instanceof Array ? allowlist.map(m=>MsafeWallet.getOrigin(m)) : [MsafeWallet.getOrigin(allowlist)];
         const connector = await Connector.connect(window.parent, msafeOrigin);
         return new MsafeWallet(connector);
     }
