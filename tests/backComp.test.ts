@@ -1,14 +1,14 @@
-import {Account, adaptLegacyAccount, LegacyAccount, Option, Payload, WalletAPI} from "../src";
+import {Account, adaptLegacyAccount, LegacyAccount, Option, Payload, toLegacyAccount, WalletAPI} from "../src";
 
 const fakeAccount: Account = {
-  publicKey: ["0x1", "0x2", "0x3"],
+  publicKey: ["0x01", "0x02", "0x03"],
   address: "0x123",
   minKeysRequired: 3,
   authKey: "0x456",
 }
 
 const fakeLegacyAccount: LegacyAccount = {
-  publicKey: "0x12303",
+  publicKey: "0x01020303",
   address: "0x123",
 }
 
@@ -29,6 +29,35 @@ describe('LegacyWalletAPI', () => {
   it('legacy compatibility', async () => {
     const legacyWA = adaptLegacyAccount(fakeLatestWalletAPI);
     expect(await legacyWA.account()).toEqual(fakeLegacyAccount);
+  })
+
+})
+
+describe('toLegacyAccount', () => {
+
+  it('toLegacyAccount', () => {
+    expect(toLegacyAccount({
+      publicKey: ["0x01", "0x02", "0x03"],
+      address: "0x123",
+      minKeysRequired: 3,
+      authKey: "0x456",
+    })).toEqual({
+      address: "0x123",
+      publicKey: '0x01020303',
+    })
+
+    expect(toLegacyAccount({
+      publicKey: [
+        "0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07", "0x08", "0x09", "0x0a", "0x0b",
+        "0x0c", "0x0d", "0x0e", "0x0f", "0x10",
+      ],
+      address: "0x123",
+      minKeysRequired: 16,
+      authKey: "0x456",
+    })).toEqual({
+      address: "0x123",
+      publicKey: "0x0102030405060708090a0b0c0d0e0f1010",
+    })
   })
 
 })
