@@ -5,6 +5,11 @@ export interface Account {
     minKeysRequired: number;
 }
 
+export interface LegacyAccount {
+  address: string,
+  publicKey: string,
+}
+
 export type Option = Partial<{
     max_gas_amount: string | bigint,
     gas_unit_price: string | bigint,

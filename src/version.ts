@@ -19,6 +19,10 @@ export function cmp(a: string, b: string): number {
 }
 
 /// Check if the version is enable allowlist.
-export function IsAllowList(version: string): boolean {
+export function isAllowList(version: string): boolean {
     return version !== undefined && cmp(version as Version, Version.ALLOWLIST) >= 0;
+}
+
+export function isMultiSigFormatVersion(version: string | undefined): boolean {
+    return version !== undefined;
 }

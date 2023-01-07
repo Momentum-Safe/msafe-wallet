@@ -1,5 +1,5 @@
 import { version } from '../package.json';
-import { IsAllowList } from './version';
+import { isAllowList } from './version';
 
 export class Connector {
     static version = version;
@@ -93,7 +93,7 @@ export class Connector {
             if (ev.origin !== origin) return;
             if (!Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_REQ)) return;
             const version = Connector.getVersionFromHandshake(ev.data);
-            if (IsAllowList(version)) {
+            if (isAllowList(version)) {
                 const channelPair = new MessageChannel();
                 (ev.source as Window).postMessage(Connector.toHandshakeMessage(Connector.HANDSHAKE_PORT_ACK), ev.origin, [channelPair.port2]);
                 handler(new Connector(channelPair.port1, version));
