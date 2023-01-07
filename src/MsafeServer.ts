@@ -1,13 +1,19 @@
 import {Connector} from "./connector";
 import {JsonRPCServer} from "./JsonRPCServer";
-import {Account, LegacyAccount, WalletAPI, WalletEvent} from "./WalletAPI";
+import {Account, adaptLegacyAccount, WalletAPI, WalletEvent} from "./WalletAPI";
 import {isMultiSigFormatVersion} from "./version";
-import {convertPKsToMultiSigPK, toLegacyAccount} from "./utils";
+import {toLegacyAccount} from "./utils";
 
 export class MsafeServer {
   public server: JsonRPCServer;
   constructor(connector: Connector, methods: WalletAPI) {
+    if (isMultiSigFormatVersion(connector.version.peer)) {
       this.server = new JsonRPCServer(connector, methods as any);
+    } else {
+      // backward compatibility
+      const legacyWalletAPI = adaptLegacyAccount(methods);
+      this.server = new JsonRPCServer(connector, legacyWalletAPI as any);
+    }
   }
   changeNetwork(network: string) {
         this.server.notify(WalletEvent.ChangeNetwork, [network]);

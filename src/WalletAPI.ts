@@ -1,3 +1,5 @@
+import {toLegacyAccount} from "./utils";
+
 export interface Account {
     publicKey: string[];
     address: string;
@@ -56,4 +58,58 @@ export enum WalletRPC {
     signAndSubmit = 'signAndSubmit',
     signTransaction = 'signTransaction',
     signMessage = 'signMessage',
+}
+
+// legacyWalletAPI is the adapted version of walletAPI.
+// It allows backward compatibility with legacy clients with account format `LegacyAccount`
+export class legacyWalletAPI {
+
+    walletAPI: WalletAPI;
+
+    constructor(walletAPI: WalletAPI) {
+        this.walletAPI = walletAPI;
+    }
+
+    async connect(): Promise<LegacyAccount> {
+        const account = await this.walletAPI.connect();
+        return toLegacyAccount(account);
+    }
+
+    disconnect(): Promise<void> {
+        return this.walletAPI.disconnect();
+    }
+
+    isConnected(): Promise<boolean> {
+        return this.walletAPI.isConnected();
+    }
+
+    network(): Promise<string> {
+        return this.walletAPI.network();
+    }
+
+    async account(): Promise<LegacyAccount> {
+        const account = await this.walletAPI.account();
+        return toLegacyAccount(account);
+    }
+
+    chainId(): Promise<Number> {
+        return this.walletAPI.chainId();
+    }
+
+    signAndSubmit(payload: Payload, option?: Option): Promise<Uint8Array> {
+        return this.walletAPI.signAndSubmit(payload, option);
+    }
+
+    signTransaction(payload: Payload, option?: Option): Promise<Uint8Array> {
+        return this.walletAPI.signTransaction(payload, option);
+    }
+
+    signMessage(message: string | Uint8Array): Promise<Uint8Array> {
+        return this.walletAPI.signMessage(message);
+    }
+}
+
+export function adaptLegacyAccount(methods: WalletAPI): legacyWalletAPI {
+    // Adapt legacy account
+    return new legacyWalletAPI(methods)
 }
