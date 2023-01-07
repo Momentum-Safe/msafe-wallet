@@ -2,6 +2,7 @@ import { Connector } from '../src/connector'
 import { MsafeWallet } from '../src/MsafeWallet';
 import { MsafeServer } from '../src/MsafeServer';
 import { Account, Payload, Option } from '../src/WalletAPI';
+import { version } from '../package.json';
 
 const TestData = {
     account: {
@@ -21,7 +22,7 @@ const TestData = {
 
 test("MsafeWallet integration test", async () => {
     const channel = new MessageChannel();
-    const msafeServer = new MsafeServer(new Connector(channel.port1), {
+    const msafeServer = new MsafeServer(new Connector(channel.port1, version), {
         async connect(): Promise<Account> {
             TestData.isConnected = true;
             return TestData.account;
@@ -63,10 +64,10 @@ test("MsafeWallet integration test", async () => {
             throw "unsupport";
         },
     });
-    const msafeWallet = new MsafeWallet(new Connector(channel.port2));
+    const msafeWallet = new MsafeWallet(new Connector(channel.port2, version));
     // check version match
-    expect(msafeWallet.version.peer).toEqual(undefined);
-    expect(msafeServer.version.peer).toEqual(undefined);
+    expect(msafeWallet.version.peer).toEqual(version);
+    expect(msafeServer.version.peer).toEqual(version);
     expect(msafeWallet.version.self).toEqual(msafeServer.version.self);
 
     await expect(msafeWallet.isConnected()).resolves.toEqual(false);
