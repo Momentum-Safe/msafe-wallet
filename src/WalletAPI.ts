@@ -60,9 +60,9 @@ export enum WalletRPC {
     signMessage = 'signMessage',
 }
 
-// legacyWalletAPI is the adapted version of walletAPI.
+// LegacyWalletAPI is the adapted version of walletAPI.
 // It allows backward compatibility with legacy clients with account format `LegacyAccount`
-export class legacyWalletAPI {
+export class LegacyWalletAPI {
 
     walletAPI: WalletAPI;
 
@@ -109,7 +109,7 @@ export class legacyWalletAPI {
     }
 }
 
-export function adaptLegacyAccount(methods: WalletAPI): legacyWalletAPI {
+export function adaptLegacyAccount(methods: WalletAPI): LegacyWalletAPI {
     // Adapt legacy account
-    return new legacyWalletAPI(methods)
+    return new LegacyWalletAPI(methods)
 }
