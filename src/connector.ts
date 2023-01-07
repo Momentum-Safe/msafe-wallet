@@ -1,9 +1,11 @@
 import { version } from '../package.json';
+import { IsAllowList } from './version';
 
 export class Connector {
     static version = version;
     static HANDSHAKE_REQ = 'HANDSHAKE_REQ';
     static HANDSHAKE_ACK = 'HANDSHAKE_ACK';
+    static HANDSHAKE_PORT_ACK = 'HANDSHAKE_PORT_REQ';
     connected = true;
     onClose?: () => void;
     onMessage?: (data: any) => void;
@@ -52,38 +54,54 @@ export class Connector {
         return data.startsWith(handshakeType);
     }
 
-    static getHandshakeVersion(data: string) {
+    static getVersionFromHandshake(data: string) {
         return String(data).split(':')[1];
     }
 
-    static toHandshakeVersion(handshakeType: string, withVersion = true) {
+    static toHandshakeMessage(handshakeType: string, withVersion = true) {
         return withVersion ? `${handshakeType}:${Connector.version}` : handshakeType;
     }
 
     // client connect to server
-    static async connect(targetWindow: any, origin: string): Promise<Connector> {
+    static async connect(targetWindow: any, origins: string[]): Promise<Connector> {
         return new Promise((resolve, rejected) => {
-            const channelPair = new MessageChannel();
-            let timer = setTimeout(rejected, 1000);
-            channelPair.port1.onmessage = ev => {
-                if (Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_ACK)) {
-                    clearTimeout(timer);
-                    const version = Connector.getHandshakeVersion(ev.data);
-                    resolve(new Connector(channelPair.port1, version));
-                }
+            let cleaner = () => { };
+            let timer = setTimeout(() => {
+                cleaner();
+                rejected('connect timeout');
+            }, 1000);
+            const handle = (ev: MessageEvent) => {
+                const port = ev.ports[0];
+                if (!origins.includes(ev.origin)) return;
+                if (!Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_PORT_ACK)) return;
+                cleaner();
+                const version = Connector.getVersionFromHandshake(ev.data);
+                resolve(new Connector(port, version));
             };
-            targetWindow.postMessage(Connector.toHandshakeVersion(Connector.HANDSHAKE_REQ), origin, [channelPair.port2]);
+            cleaner = () => {
+                clearTimeout(timer);
+                window.removeEventListener('message', handle);
+            };
+            window.addEventListener('message', handle);
+            targetWindow.postMessage(Connector.toHandshakeMessage(Connector.HANDSHAKE_REQ), '*');
         });
     }
     // server listening connection request
-    static accepts(origin: string, fallback: (connector: Connector) => void): () => void {
+    static accepts(origin: string, handler: (connector: Connector) => void): () => void {
+        origin = new URL(origin).origin;
         const handle = (ev: MessageEvent) => {
             if (ev.origin !== origin) return;
             if (!Connector.isHandshakeMessage(ev.data, Connector.HANDSHAKE_REQ)) return;
-            const version = Connector.getHandshakeVersion(ev.data);
-            const port = ev.ports[0];
-            port.postMessage(Connector.toHandshakeVersion(Connector.HANDSHAKE_ACK, version !== undefined));
-            fallback(new Connector(ev.ports[0], version));
+            const version = Connector.getVersionFromHandshake(ev.data);
+            if (IsAllowList(version)) {
+                const channelPair = new MessageChannel();
+                (ev.source as Window).postMessage(Connector.toHandshakeMessage(Connector.HANDSHAKE_PORT_ACK), ev.origin, [channelPair.port2]);
+                handler(new Connector(channelPair.port1, version));
+            } else {
+                const port = ev.ports[0];
+                port.postMessage(Connector.toHandshakeMessage(Connector.HANDSHAKE_ACK, version !== undefined));
+                handler(new Connector(ev.ports[0], version));
+            }
         };
         window.addEventListener('message', handle);
         return () => window.removeEventListener('message', handle);
