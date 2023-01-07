@@ -1,14 +1,14 @@
-# Msafe Wallet SDK
+# MSafe Wallet SDK
 
 [![codecov](https://codecov.io/gh/Momentum-Safe/msafe-wallet/branch/main/graph/badge.svg?token=CYM8HWWKOW)](https://codecov.io/gh/Momentum-Safe/msafe-wallet)
 
-Msafe Wallet SDK is used to integrate any dapp into msafe multi-sign wallet.  
+MSafe Wallet SDK is used to integrate any dapp into msafe multi-sign wallet.  
 The frontend of dapp will run in an iframe under the msafe website, this SDK can be used for the interaction between dapp and msafe wallet.
 
 This SDK wraps the msafe wallet and exposes a set of easy-to-use wallet interfaces. We are also working on integrating our SDK into aptos-wallet-adaptor, so that you can access our wallet through aptos-wallet-adaptor.
 
 Two way to integrate msafe wallet to your dapp:
-- use msafe wallet SDK directly: [Use Msafe Wallet SDK]
+- use msafe wallet SDK directly: [Use MSafe Wallet SDK]
 - use aptos-wallet-adaptor: [Use Aptos Wallet Adaptor]
 
 ## Installation
@@ -19,25 +19,25 @@ Installation of the [npm package]:
 npm install --save msafe-wallet
 ```
 
-## Detecting the Msafe Wallet environment
+## Detecting the MSafe Wallet environment
 To use msfe wallet, the dapp website must be running in an iframe under the msafe website.
 There are two way to detect if the dapp is running in msafe:
-- Check if the `MsafeWallet.inMsafeWallet()` return true.
+- Check if the `MSafeWallet.inMSafeWallet()` return true.
 - Check if the current url contains the parameter `msafe=true`.
 
 If the msafe wallet environment is detected, you can automatically connect to the msafe wallet at initialization.
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const inMsafeWallet = window.location.search.includes('msafe=true');
-if(!MsafeWallet.inMsafeWallet()){ // check if the dapp is running in msafe
-    const url = MsafeWallet.getAppUrl('Testnet'); // get dapp url for msafe
+import { MSafeWallet } from "msafe-wallet";
+const inMSafeWallet = window.location.search.includes('msafe=true');
+if(!MSafeWallet.inMSafeWallet()){ // check if the dapp is running in msafe
+    const url = MSafeWallet.getAppUrl('Testnet'); // get dapp url for msafe
     window.location.href.replace(url); // redirect to msafe dapp
 }
 ```
 
-## Use Msafe Wallet SDK
+## Use MSafe Wallet SDK
 ### Init msafe wallet
 You should initialize it once and use it later.
 
@@ -45,12 +45,12 @@ You should initialize it once and use it later.
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-if(!MsafeWallet.inMsafeWallet()){ // check if the dapp is running in msafe
-    const url = MsafeWallet.getAppUrl('Testnet'); // get dapp url for msafe
+import { MSafeWallet } from "msafe-wallet";
+if(!MSafeWallet.inMSafeWallet()){ // check if the dapp is running in msafe
+    const url = MSafeWallet.getAppUrl('Testnet'); // get dapp url for msafe
     window.location.href.replace(url); // redirect to msafe dapp
 }
-const msafe = await MsafeWallet.new('Testnet');
+const msafe = await MSafeWallet.new('Testnet');
 ```
 
 ### Connect to a msafe account
@@ -60,8 +60,8 @@ This method is used to connect to current account. It returns an account object 
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 const account = await msafe.connect(); // {addres:string, publicKey:string}
 await msafe.isConnected(); // true
 ```
@@ -71,8 +71,8 @@ This method is used to get current network. It returns a string.
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 const network:string = await msafe.network(); // 'Testnet'
 ```
 
@@ -81,8 +81,8 @@ This method is used to get current msafe account. It returns an account object c
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 const account:Account = await msafe.account();
 console.log("address:", account.address);
 console.log("public key:", account.publicKey);
@@ -93,8 +93,8 @@ This method is used to get current ChainId. It returns a number.
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 const account = await msafe.chainId();  // 1
 ```
 
@@ -112,8 +112,8 @@ It takes two parameters:
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 const payload = {
     type: "entry_function",
     function: "0x1::coin::transfer",
@@ -143,8 +143,8 @@ This method is used to register the callback function for the network change eve
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 msafe.onChangeAccount((network:string)=>{
     console.log("network change to:", network)
 });
@@ -155,8 +155,8 @@ This method is used to register the callback function for the account change eve
 
 Example:
 ```typescript
-import { MsafeWallet } from "msafe-wallet";
-const msafe = await MsafeWallet.new('Testnet');
+import { MSafeWallet } from "msafe-wallet";
+const msafe = await MSafeWallet.new('Testnet');
 msafe.onChangeAccount((account:Account)=>{
     console.log("address:", account.address);
     console.log("public key:", account.publicKey);
@@ -179,11 +179,11 @@ Example:
 ```typescript
 import {
     WalletProvider,
-    MsafeWalletAdapter,
+    MSafeWalletAdapter,
 } from "@manahippo/aptos-wallet-adapter";
 
 const wallets = [
-    new MsafeWalletAdapter('Testnet'),
+    new MSafeWalletAdapter('Testnet'),
 ];
 ```
 
@@ -193,11 +193,11 @@ Example:
 import React from "react";
 import {
     WalletProvider,
-    MsafeWalletAdapter,
+    MSafeWalletAdapter,
 } from "@manahippo/aptos-wallet-adapter";
 
 const wallets = [
-    new MsafeWalletAdapter('Testnet'),
+    new MSafeWalletAdapter('Testnet'),
 ];
 
 const App: React.FC = () => {
@@ -218,9 +218,9 @@ export default App;
 ### Use wallet adapter hooks
 Example:
 ```tsx
-import { useWallet, MsafeWalletName } from "@manahippo/aptos-wallet-adapter";
+import { useWallet, MSafeWalletName } from "@manahippo/aptos-wallet-adapter";
 
-const WalletName = MsafeWalletName;
+const WalletName = MSafeWalletName;
 
 export function DAPP() {
     const {
@@ -242,9 +242,9 @@ export function DAPP() {
 
 Example:
 ```tsx
-import { useWallet, MsafeWalletName } from "@manahippo/aptos-wallet-adapter";
+import { useWallet, MSafeWalletName } from "@manahippo/aptos-wallet-adapter";
 
-const WalletName = MsafeWalletName;
+const WalletName = MSafeWalletName;
 
 export function DAPP() {
     const {
@@ -277,25 +277,25 @@ export function DAPP() {
 }
 ```
 
-## Usage(Msafe Server Side)
+## Usage(MSafe Server Side)
 This section is for implementation on the msafe server side and is intended for use only by the msafe developers themselves.
 ### Accept dapp connection
 
 Example:
 ```typescript
-import { Connector,MsafeServer } from "msafe-wallet";
+import { Connector,MSafeServer } from "msafe-wallet";
 // cleaner is a function that used to remove listener.
 const cleaner = Connector.accepts(dappUrl, (connector:Connector) => {
 
 })
 ```
-### Create Msafe Wallet Service
+### Create MSafe Wallet Service
 
 Example:
 ```typescript
-import { Connector,MsafeServer,WalletAPI } from "msafe-wallet";
+import { Connector,MSafeServer,WalletAPI } from "msafe-wallet";
 const connector:Connector = await Connector.accept(dappUrl);
-const server = new MsafeServer(connector, {
+const server = new MSafeServer(connector, {
     async connect(): Promise<Account> {
         // ...
         return {address:'0x1', publicKey:'0x1234...'};
@@ -312,16 +312,16 @@ const server = new MsafeServer(connector, {
 
 Example:
 ```typescript
-import { Connector,MsafeServer,WalletAPI } from "msafe-wallet";
-const server = new MsafeServer(...);
+import { Connector,MSafeServer,WalletAPI } from "msafe-wallet";
+const server = new MSafeServer(...);
 await server.changeNetwork('Testnet');
 ```
 ### Emit Account Change Event
 
 Example:
 ```typescript
-import { Connector,MsafeServer,WalletAPI } from "msafe-wallet";
-const server = new MsafeServer(...);
+import { Connector,MSafeServer,WalletAPI } from "msafe-wallet";
+const server = new MSafeServer(...);
 await server.changeAccount({address:'0x1234...', publicKey:'0xabce...'});
 ```
 
@@ -343,5 +343,5 @@ await server.changeAccount({address:'0x1234...', publicKey:'0xabce...'});
 ```
 
 [npm package]: https://www.npmjs.com/package/msafe-iframe
-[Use Msafe Wallet SDK]: #use-msafe-wallet-sdk
+[Use MSafe Wallet SDK]: #use-msafe-wallet-sdk
 [Use Aptos Wallet Adaptor]: #use-aptos-wallet-adaptor
