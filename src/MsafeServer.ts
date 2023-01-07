@@ -2,7 +2,7 @@ import {Connector} from "./connector";
 import {JsonRPCServer} from "./JsonRPCServer";
 import {Account, LegacyAccount, WalletAPI, WalletEvent} from "./WalletAPI";
 import {isMultiSigFormatVersion} from "./version";
-import {convertPKsToMultiSigPK} from "./utils";
+import {convertPKsToMultiSigPK, toLegacyAccount} from "./utils";
 
 export class MsafeServer {
   public server: JsonRPCServer;
@@ -17,10 +17,7 @@ export class MsafeServer {
     if (isMultiSigFormatVersion(peerVersion)) {
       this.server.notify(WalletEvent.ChangeAccount, [account]);
     } else {
-      const legacyAccount: LegacyAccount = {
-        address: account.address,
-        publicKey: convertPKsToMultiSigPK(account.publicKey, account.minKeysRequired),
-      };
+      const legacyAccount = toLegacyAccount(account);
       this.server.notify(WalletEvent.ChangeAccount, [legacyAccount]);
     }
   }
