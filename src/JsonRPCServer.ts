@@ -5,10 +5,12 @@ import { decodeFromStr, encodeToStr } from "./coder";
 type RPCMethod = (...params: any[]) => Promise<any>;
 
 export class JsonRPCServer {
+
     constructor(public readonly connector: Connector, readonly methods: { [method: string]: RPCMethod }) {
         this.connector.on('message', data => this.onRequest(data!));
         this.connector.on('close', () => this.onClose());
     }
+
     private onRequest(data: string) {
         const req = parse(data) as JsonRpcPayloadRequest;
         if (req.type !== 'request') return;
@@ -26,13 +28,16 @@ export class JsonRPCServer {
             this.connector.send(resp);
         });
     }
+
     notify(type: string, data: any[]) {
         const notification = format.notification(type, data.map(encodeToStr));
         this.connector.send(notification);
     }
+
     get version() {
         return this.connector.version;
     }
+
     private onClose() {
 
     }

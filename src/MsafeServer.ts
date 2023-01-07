@@ -5,7 +5,9 @@ import {isMultiSigFormatVersion} from "./version";
 import {toLegacyAccount} from "./utils";
 
 export class MsafeServer {
+
   public server: JsonRPCServer;
+
   constructor(connector: Connector, methods: WalletAPI) {
     if (isMultiSigFormatVersion(connector.version.peer)) {
       this.server = new JsonRPCServer(connector, methods as any);
@@ -15,9 +17,11 @@ export class MsafeServer {
       this.server = new JsonRPCServer(connector, legacyWalletAPI as any);
     }
   }
+
   changeNetwork(network: string) {
         this.server.notify(WalletEvent.ChangeNetwork, [network]);
   }
+
   changeAccount(account: Account) {
     const peerVersion = this.version.peer;
     if (isMultiSigFormatVersion(peerVersion)) {

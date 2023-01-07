@@ -18,8 +18,11 @@ type MsafeNetwork = NetworkType | string;
 type MsafeNetworks = MsafeNetwork | MsafeNetwork[];
 
 export class MsafeWallet implements WalletAPI {
+
     public client: JsonRPCClient;
+
     events: { [key: string]: onEventFunc } = {};
+
     constructor(connector: Connector) {
         const onEvent = (type: string, ...params: any[]) => {
             const cbk = this.events[type];
@@ -32,30 +35,39 @@ export class MsafeWallet implements WalletAPI {
         const notifiers = Object.fromEntries(entries);
         this.client = new JsonRPCClient(connector, notifiers);
     }
+
     async connect(): Promise<Account> {
         return this.client.request(WalletRPC.connect);
     }
+
     async isConnected(): Promise<boolean> {
         return this.client.request(WalletRPC.isConnected);
     }
+
     async disconnect() {
         return this.client.request(WalletRPC.disconnect);
     }
+
     onChangeAccount(cbk: (account: Account) => void) {
         this.events[WalletEvent.ChangeAccount] = cbk;
     }
+
     onChangeNetwork(cbk: (network: string) => void) {
         this.events[WalletEvent.ChangeNetwork] = cbk;
     }
+
     async network(): Promise<string> {
         return this.client.request(WalletRPC.network);
     }
+
     async account(): Promise<Account> {
         return this.client.request(WalletRPC.account);
     }
+
     async chainId(): Promise<Number> {
         return this.client.request(WalletRPC.chainId);
     }
+
     async signAndSubmit(payload: Payload, option?: Option): Promise<Uint8Array> {
         return this.client.request(WalletRPC.signAndSubmit, [payload, option]);
     }
@@ -115,4 +127,5 @@ export class MsafeWallet implements WalletAPI {
         const connector = await Connector.connect(window.parent, msafeOrigin);
         return new MsafeWallet(connector);
     }
+
 }
