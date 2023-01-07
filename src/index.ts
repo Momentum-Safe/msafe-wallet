@@ -5,4 +5,4 @@ export * from './JsonRPCServer';
 export * from './JsonRPCClient';
 export * from './connector';
 export * from './coder';
-export {convertPKsToMultiSigPK} from "./utils";
+export * from "./utils";

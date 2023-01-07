@@ -60,9 +60,9 @@ export enum WalletRPC {
     signMessage = 'signMessage',
 }
 
-// legacyWalletAPI is the adapted version of walletAPI.
+// LegacyWalletAPI is the adapted version of walletAPI.
 // It allows backward compatibility with legacy clients with account format `LegacyAccount`
-interface legacyWalletAPI {
+interface LegacyWalletAPI {
     connect(): Promise<LegacyAccount>,
     disconnect(): Promise<void>,
     isConnected(): Promise<boolean>,
@@ -74,7 +74,7 @@ interface legacyWalletAPI {
     signMessage(message: string | Uint8Array): Promise<Uint8Array>,
 }
 
-export function adaptLegacyAccount(methods: WalletAPI): legacyWalletAPI {
+export function adaptLegacyAccount(methods: WalletAPI): LegacyWalletAPI {
     // Adapt legacy account
     return {
         connect(): Promise<LegacyAccount> {
@@ -104,5 +104,5 @@ export function adaptLegacyAccount(methods: WalletAPI): legacyWalletAPI {
         signMessage(message: string | Uint8Array): Promise<Uint8Array> {
             return methods.signMessage(message);
         }
-    }
+    };
 }
