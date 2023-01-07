@@ -147,4 +147,4 @@ export class MSafeWallet implements WalletAPI {
 /**
  * @deprecated use MSafeWallet instead, it will be removed in the future.
  */
-export const MsafeWallet = MSafeWallet;
+export class MsafeWallet extends MSafeWallet{}
