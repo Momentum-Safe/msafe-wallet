@@ -1,7 +1,7 @@
 
-
+/// Versions that introduces new features.
 enum Version {
-    ALLOWLIST = '2.0.5',
+    ALLOWLIST = '2.0.5', // version that enable allowlist
 };
 
 /// Compare two version strings.
@@ -20,5 +20,5 @@ export function cmp(a: string, b: string): number {
 
 /// Check if the version is enable allowlist.
 export function IsAllowList(version: string): boolean {
-    return version !== undefined && cmp(version as Version, Version.ALLOWLIST) >= 0;
+    return version !== undefined && cmp(version, Version.ALLOWLIST) >= 0;
 }
