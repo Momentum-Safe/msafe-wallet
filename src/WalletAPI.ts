@@ -1,4 +1,4 @@
-import {toLegacyAccount} from "./utils";
+import { toLegacyAccount } from "./utils";
 
 export interface Account {
     publicKey: string[];
@@ -8,8 +8,8 @@ export interface Account {
 }
 
 export interface LegacyAccount {
-  address: string,
-  publicKey: string,
+    address: string,
+    publicKey: string,
 }
 
 export type Option = Partial<{
@@ -62,54 +62,47 @@ export enum WalletRPC {
 
 // legacyWalletAPI is the adapted version of walletAPI.
 // It allows backward compatibility with legacy clients with account format `LegacyAccount`
-export class legacyWalletAPI {
-
-    walletAPI: WalletAPI;
-
-    constructor(walletAPI: WalletAPI) {
-        this.walletAPI = walletAPI;
-    }
-
-    async connect(): Promise<LegacyAccount> {
-        const account = await this.walletAPI.connect();
-        return toLegacyAccount(account);
-    }
-
-    disconnect(): Promise<void> {
-        return this.walletAPI.disconnect();
-    }
-
-    isConnected(): Promise<boolean> {
-        return this.walletAPI.isConnected();
-    }
-
-    network(): Promise<string> {
-        return this.walletAPI.network();
-    }
-
-    async account(): Promise<LegacyAccount> {
-        const account = await this.walletAPI.account();
-        return toLegacyAccount(account);
-    }
-
-    chainId(): Promise<Number> {
-        return this.walletAPI.chainId();
-    }
-
-    signAndSubmit(payload: Payload, option?: Option): Promise<Uint8Array> {
-        return this.walletAPI.signAndSubmit(payload, option);
-    }
-
-    signTransaction(payload: Payload, option?: Option): Promise<Uint8Array> {
-        return this.walletAPI.signTransaction(payload, option);
-    }
-
-    signMessage(message: string | Uint8Array): Promise<Uint8Array> {
-        return this.walletAPI.signMessage(message);
-    }
+interface legacyWalletAPI {
+    connect(): Promise<LegacyAccount>,
+    disconnect(): Promise<void>,
+    isConnected(): Promise<boolean>,
+    network(): Promise<string>,
+    account(): Promise<LegacyAccount>,
+    chainId(): Promise<Number>,
+    signAndSubmit(payload: Payload, option?: Option): Promise<Uint8Array>,
+    signTransaction(payload: Payload, option?: Option): Promise<Uint8Array>,
+    signMessage(message: string | Uint8Array): Promise<Uint8Array>,
 }
 
 export function adaptLegacyAccount(methods: WalletAPI): legacyWalletAPI {
     // Adapt legacy account
-    return new legacyWalletAPI(methods)
+    return {
+        connect(): Promise<LegacyAccount> {
+            return methods.connect().then(account => toLegacyAccount(account));
+        },
+        disconnect(): Promise<void> {
+            return methods.disconnect();
+        },
+        isConnected(): Promise<boolean> {
+            return methods.isConnected();
+        },
+        network(): Promise<string> {
+            return methods.network();
+        },
+        account(): Promise<LegacyAccount> {
+            return methods.account().then(account => toLegacyAccount(account));
+        },
+        chainId(): Promise<Number> {
+            return methods.chainId();
+        },
+        signAndSubmit(payload: Payload, option?: Option): Promise<Uint8Array> {
+            return methods.signAndSubmit(payload, option);
+        },
+        signTransaction(payload: Payload, option?: Option): Promise<Uint8Array> {
+            return methods.signTransaction(payload, option);
+        },
+        signMessage(message: string | Uint8Array): Promise<Uint8Array> {
+            return methods.signMessage(message);
+        }
+    }
 }
