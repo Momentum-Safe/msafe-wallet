@@ -1,5 +1,5 @@
-export * from './MsafeServer';
-export * from './MsafeWallet';
+export * from './MSafeServer';
+export * from './MSafeWallet';
 export * from './WalletAPI';
 export * from './JsonRPCServer';
 export * from './JsonRPCClient';

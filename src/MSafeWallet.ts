@@ -4,20 +4,20 @@ import { Account, WalletAPI, Option, Payload, WalletEvent, WalletRPC } from "./W
 type onEventFunc = (data: any) => void
 
 /// MSafe website urls, it acts as the default allowlist.
-const MsafeOrigins = {
+const MSafeOrigins = {
     Mainnet: 'https://app.m-safe.io',
     Testnet: 'https://testnet.m-safe.io',
     Partner: 'https://partner.m-safe.io',
 };
 
 /// Network type of MSafe websites. It can be 'Mainnet', 'Testnet' or 'Partner'. 
-type NetworkType = keyof typeof MsafeOrigins;
+type NetworkType = keyof typeof MSafeOrigins;
 /// NetworkType or MSafe website url.
-type MsafeNetwork = NetworkType | string;
-/// MsafeNetwork or array of MsafeNetwork.
-type MsafeNetworks = MsafeNetwork | MsafeNetwork[];
+type MSafeNetwork = NetworkType | string;
+/// MSafeNetwork or array of MSafeNetwork.
+type MSafeNetworks = MSafeNetwork | MSafeNetwork[];
 
-export class MsafeWallet implements WalletAPI {
+export class MSafeWallet implements WalletAPI {
 
     public client: JsonRPCClient;
 
@@ -84,48 +84,67 @@ export class MsafeWallet implements WalletAPI {
         return this.client.version;
     }
 
-    /// check if current page is running under msafe wallet
-    static inMsafeWallet(): boolean {
+    /**
+     * @description check if current page is running under MSafe wallet
+     */
+    static inMSafeWallet(): boolean {
         return typeof window !== 'undefined' &&
             typeof document !== 'undefined' &&
             typeof parent !== 'undefined' &&
             typeof parent.window !== 'undefined' &&
             parent.window !== window
     }
+    /**
+     * @deprecated use inMSafeWallet instead 
+     */
+    static inMsafeWallet(): boolean {
+        return MSafeWallet.inMSafeWallet();
+    }
 
-    /// Get msafe dapp url, which can be used to open dapp under msafe wallet.
-    /// @param msafe: network type or msafe website url
-    /// @param dappUrl: dapp url
-    static getAppUrl(msafe: MsafeNetwork = 'Mainnet', dappUrl = `${window.location.href}`): string {
-        const msafeOrigin = MsafeWallet.getOrigin(msafe);
+    /** 
+     * @description Get msafe dapp url, which can be used to open dapp under msafe wallet.
+     * @param msafe: network type or msafe website url
+     * @param dappUrl: dapp url
+     */
+    static getAppUrl(msafe: MSafeNetwork = 'Mainnet', dappUrl = `${window.location.href}`): string {
+        const msafeOrigin = MSafeWallet.getOrigin(msafe);
         return `${msafeOrigin}/apps/0?url=${encodeURIComponent(dappUrl)}`;
     }
 
-    /// Get msafe origin by network type or url
-    /// @param msafe: network type or msafe website url
-    static getOrigin(msafe: MsafeNetwork = 'Mainnet'): string {
-        return new URL(MsafeOrigins[msafe as NetworkType] || msafe).origin;
+    /**
+     * @description Get msafe origin by network type or url
+     * @param msafe: network type or msafe website url
+     * @returns msafe origin
+     */
+    static getOrigin(msafe: MSafeNetwork = 'Mainnet'): string {
+        return new URL(MSafeOrigins[msafe as NetworkType] || msafe).origin;
     }
 
-    /// Open msafe wallet and establish communication with the msafe website.
-    /// The allowlist is used to check if the msafe website is trusted.
-    /// @param allowlist: allowlist of msafe website url, omit means accpets all msafe websites. you can pass a single url or an array of urls.
-    /// @returns MsafeWallet instance
-    /// Example:
-    /// 1. Iinitialize MsafeWallet with default allowlist:
-    ///     const wallet = await MsafeWallet.new();
-    /// 2. Iinitialize MsafeWallet with a single MSafe url:
-    ///     const wallet = await MsafeWallet.new('https://app.m-safe.io');
-    /// 3. Iinitialize MsafeWallet with an array of MSafe urls:
-    ///     const wallet = await MsafeWallet.new(['https://app.m-safe.io', 'https://testnet.m-safe.io', 'https://partner.m-safe.io']);
-    /// 4. Iinitialize MsafeWallet with a single network type:
-    ///     const wallet = await MsafeWallet.new('Mainnet');
-    /// 5. Iinitialize MsafeWallet with an array of network types:
-    ///     const wallet = await MsafeWallet.new(['Mainnet', 'Testnet', 'Partner']);
-    static async new(allowlist: MsafeNetworks = Object.values(MsafeOrigins)): Promise<MsafeWallet> {
-        const msafeOrigin = allowlist instanceof Array ? allowlist.map(m=>MsafeWallet.getOrigin(m)) : [MsafeWallet.getOrigin(allowlist)];
+    /**
+     * @description Open msafe wallet and establish communication with the msafe website.
+     *              The allowlist is used to check if the msafe website is trusted.
+     * @param allowlist: allowlist of msafe website url, omit means accpets all msafe websites. you can pass a single url or an array of urls.
+     * @returns MSafeWallet instance
+     * @example:
+     *  1. Initialize MSafeWallet with default allowlist:
+     *      const wallet = await MSafeWallet.new();
+     *  2. Initialize MSafeWallet with a single MSafe url:
+     *      const wallet = await MSafeWallet.new('https://app.m-safe.io');
+     *  3. Initialize MSafeWallet with an array of MSafe urls:
+     *      const wallet = await MSafeWallet.new(['https://app.m-safe.io', 'https://testnet.m-safe.io', 'https://partner.m-safe.io']);
+     *  4. Initialize MSafeWallet with a single network type:
+     *      const wallet = await MSafeWallet.new('Mainnet');
+     *  5. Initialize MSafeWallet with an array of network types:
+     *      const wallet = await MSafeWallet.new(['Mainnet', 'Testnet', 'Partner']);
+     */
+    static async new(allowlist: MSafeNetworks = Object.values(MSafeOrigins)): Promise<MSafeWallet> {
+        const msafeOrigin = allowlist instanceof Array ? allowlist.map(m=>MSafeWallet.getOrigin(m)) : [MSafeWallet.getOrigin(allowlist)];
         const connector = await Connector.connect(window.parent, msafeOrigin);
-        return new MsafeWallet(connector);
+        return new MSafeWallet(connector);
     }
-
 }
+
+/**
+ * @deprecated use MSafeWallet instead, it will be removed in the future.
+ */
+export const MsafeWallet = MSafeWallet;

@@ -1,6 +1,6 @@
 
 /// Versions that introduces new features.
-enum Version {
+enum Versions {
     ALLOWLIST = '2.0.5', // version that enable allowlist
 };
 
@@ -20,7 +20,7 @@ export function cmp(a: string, b: string): number {
 
 /// Check if the version is enable allowlist.
 export function isAllowList(version: string): boolean {
-    return version !== undefined && cmp(version as Version, Version.ALLOWLIST) >= 0;
+    return version !== undefined && cmp(version, Versions.ALLOWLIST) >= 0;
 }
 
 export function isMultiSigFormatVersion(version: string | undefined): boolean {

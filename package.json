@@ -1,6 +1,6 @@
 {
   "name": "msafe-wallet",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "description": "appstore sdk of msafe wallet",
   "author": "LeviHHH",
   "license": "MIT",
@@ -30,9 +30,10 @@
     "url": "https://github.com/Momentum-Safe/msafe-iframe/issues"
   },
   "keywords": [
-    "Msafe",
-    "Msafe Iframe",
-    "Msafe SDK"
+    "MSafe",
+    "MSafe Iframe",
+    "MSafe SDK",
+    "MSafe wallet"
   ],
   "dependencies": {
     "buffer": "^6.0.3",
