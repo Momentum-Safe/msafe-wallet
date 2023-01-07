@@ -1,7 +1,7 @@
 
-
+/// Versions that introduces new features.
 enum Version {
-    ALLOWLIST = '2.0.5',
+    ALLOWLIST = '2.0.5', // version that enable allowlist
 };
 
 /// Compare two version strings.
