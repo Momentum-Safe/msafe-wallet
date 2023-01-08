@@ -1,6 +1,6 @@
 {
   "name": "msafe-wallet",
-  "version": "2.0.6",
+  "version": "2.1.2",
   "description": "appstore sdk of msafe wallet",
   "author": "LeviHHH",
   "license": "MIT",
@@ -16,23 +16,24 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "yarn clean && yarn _build:browser && yarn _build:node",
-    "_build:browser": "tsup --platform browser --format iife --global-name msafeIframe --minify",
+    "_build:browser": "tsup --platform browser --format iife --global-name MSafeWallet --minify",
     "_build:node": "tsup --format cjs,esm --dts",
     "test": "jest",
     "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Momentum-Safe/msafe-iframe.git"
+    "url": "https://github.com/Momentum-Safe/msafe-wallet.git"
   },
-  "homepage": "https://github.com/Momentum-Safe/msafe-iframe",
+  "homepage": "https://github.com/Momentum-Safe/msafe-wallet",
   "bugs": {
-    "url": "https://github.com/Momentum-Safe/msafe-iframe/issues"
+    "url": "https://github.com/Momentum-Safe/msafe-wallet/issues"
   },
   "keywords": [
-    "Msafe",
-    "Msafe Iframe",
-    "Msafe SDK"
+    "MSafe",
+    "MSafe Iframe",
+    "MSafe SDK",
+    "MSafe wallet"
   ],
   "dependencies": {
     "buffer": "^6.0.3",

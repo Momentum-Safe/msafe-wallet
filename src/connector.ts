@@ -50,8 +50,8 @@ export class Connector {
         }
     }
 
-    static isHandshakeMessage(data: string, handshakeType: string) {
-        return data.startsWith(handshakeType);
+    static isHandshakeMessage<T>(data: T, handshakeType: string) {
+        return typeof data === 'string' && data.startsWith(handshakeType);
     }
 
     static getVersionFromHandshake(data: string) {

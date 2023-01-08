@@ -4,7 +4,7 @@ import {Account, adaptLegacyAccount, WalletAPI, WalletEvent} from "./WalletAPI";
 import {isMultiSigFormatVersion} from "./version";
 import {toLegacyAccount} from "./utils";
 
-export class MsafeServer {
+export class MSafeServer {
 
   public server: JsonRPCServer;
 
