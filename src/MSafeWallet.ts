@@ -103,8 +103,8 @@ export class MSafeWallet implements WalletAPI {
 
     /** 
      * @description Get msafe dapp url, which can be used to open dapp under msafe wallet.
-     * @param msafe: network type or msafe website url
-     * @param dappUrl: dapp url
+     * @param msafe network type or msafe website url
+     * @param dappUrl dapp url
      */
     static getAppUrl(msafe: MSafeNetwork = 'Mainnet', dappUrl = `${window.location.href}`): string {
         const msafeOrigin = MSafeWallet.getOrigin(msafe);
@@ -113,7 +113,7 @@ export class MSafeWallet implements WalletAPI {
 
     /**
      * @description Get msafe origin by network type or url
-     * @param msafe: network type or msafe website url
+     * @param msafe network type or msafe website url
      * @returns msafe origin
      */
     static getOrigin(msafe: MSafeNetwork = 'Mainnet'): string {
@@ -123,18 +123,18 @@ export class MSafeWallet implements WalletAPI {
     /**
      * @description Open msafe wallet and establish communication with the msafe website.
      *              The allowlist is used to check if the msafe website is trusted.
-     * @param allowlist: allowlist of msafe website url, omit means accpets all msafe websites. you can pass a single url or an array of urls.
+     * @param allowlist allowlist of msafe website url, omit means accpets all msafe websites. you can pass a single url or an array of urls.
      * @returns MSafeWallet instance
-     * @example:
-     *  1. Initialize MSafeWallet with default allowlist:
+     * @example
+     *  // 1. Initialize MSafeWallet with default allowlist:
      *      const wallet = await MSafeWallet.new();
-     *  2. Initialize MSafeWallet with a single MSafe url:
+     *  // 2. Initialize MSafeWallet with a single MSafe url:
      *      const wallet = await MSafeWallet.new('https://app.m-safe.io');
-     *  3. Initialize MSafeWallet with an array of MSafe urls:
+     *  // 3. Initialize MSafeWallet with an array of MSafe urls:
      *      const wallet = await MSafeWallet.new(['https://app.m-safe.io', 'https://testnet.m-safe.io', 'https://partner.m-safe.io']);
-     *  4. Initialize MSafeWallet with a single network type:
+     *  // 4. Initialize MSafeWallet with a single network type:
      *      const wallet = await MSafeWallet.new('Mainnet');
-     *  5. Initialize MSafeWallet with an array of network types:
+     *  // 5. Initialize MSafeWallet with an array of network types:
      *      const wallet = await MSafeWallet.new(['Mainnet', 'Testnet', 'Partner']);
      */
     static async new(allowlist: MSafeNetworks = Object.values(MSafeOrigins)): Promise<MSafeWallet> {
