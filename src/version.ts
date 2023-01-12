@@ -1,7 +1,8 @@
 
 /// Versions that introduces new features.
-enum Versions {
+export enum Versions {
     ALLOWLIST = '2.0.5', // version that enable allowlist
+    SESSION_ID = '2.1.4', // version that enable session id
 };
 
 /// Compare two version strings.
@@ -18,11 +19,20 @@ export function cmp(a: string, b: string): number {
     return 0;
 }
 
+export function isSessionIDVersion(version: string | undefined): boolean {
+    return version !== undefined && cmp(version, Versions.SESSION_ID) >= 0;
+}
+
 /// Check if the version is enable allowlist.
-export function isAllowList(version: string): boolean {
+export function isAllowList(version: string | undefined): boolean {
     return version !== undefined && cmp(version, Versions.ALLOWLIST) >= 0;
 }
 
 export function isMultiSigFormatVersion(version: string | undefined): boolean {
+    return version !== undefined;
+}
+
+/// Check if the version is enable versioned handshake message.
+export function isVersionedHandshakeVersion(version: string | undefined): boolean {
     return version !== undefined;
 }
