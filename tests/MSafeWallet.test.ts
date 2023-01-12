@@ -22,7 +22,7 @@ const TestData = {
 
 test("MSafeWallet integration test", async () => {
     const channel = new MessageChannel();
-    const msafeServer = new MSafeServer(new Connector(channel.port1, version), {
+    const msafeServer = new MSafeServer(new Connector(channel.port1, version, undefined), {
         async connect(): Promise<Account> {
             TestData.isConnected = true;
             return TestData.account;
@@ -64,7 +64,7 @@ test("MSafeWallet integration test", async () => {
             throw "unsupport";
         },
     });
-    const msafeWallet = new MSafeWallet(new Connector(channel.port2, version));
+    const msafeWallet = new MSafeWallet(new Connector(channel.port2, version, undefined));
     // check version match
     expect(msafeWallet.version.peer).toEqual(version);
     expect(msafeServer.version.peer).toEqual(version);
